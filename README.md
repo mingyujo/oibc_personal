@@ -4,6 +4,8 @@
 
 지원 모델은 **LightGBM-MAE, CatBoost-MAE, CatBoost-RMSE, 24시간 MLP, 3시간 패치 Attention**입니다. 기존 모델 검토에서 확인한 내부 검증 시간 경계를 보완하고, 모든 모델의 조기 종료를 최종0하한 출력의 용량 가중 MAE로 맞췄습니다. 이 변경은 새 학습 레시피입니다. 기존 실험 점수나 보존된 제출 모델을 그대로 재현했다고 주장하지 않습니다.
 
+지금까지의 시도와 결과는 [실험 기록·주요 결과·EXP-001~026 색인](docs/HISTORY.md)에서 볼 수 있습니다. [이전 전체 기록](learning_history.md)과 [최신 전체 기록](learning_history_02.md)을 함께 보관합니다.
+
 ## 설치
 
 Python3.12를 권장합니다. 기본 설치는 CPU 트리 모델용이며 시스템 PATH나 전역 Python을 바꾸지 않습니다.

@@ -7,16 +7,17 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 TOP = {".gitignore", ".gitattributes", "AGENTS.md", "README.md", "pyproject.toml", "requirements-tested.txt", "setup.ps1", "setup.sh"}
+HISTORY_FILES = {"learning_history.md", "learning_history_02.md"}
 IGNORED = {".git", ".local-only", ".venv", "__pycache__", ".pytest_cache", "build", "dist"}
 
 
 def allowed(relative):
-    if relative.as_posix() in TOP: return True
+    if relative.as_posix() in TOP | HISTORY_FILES: return True
     parts = relative.parts
     if len(parts) != 2: return relative.as_posix() == ".github/workflows/tests.yml"
     if parts[0] in {"oibc_portable", "tests", "tools"}: return relative.suffix == ".py"
     if parts[0] == "configs": return relative.name in {"quick_cpu.json", "confirmation_cpu.json"}
-    if parts[0] == "docs": return relative.name in {"MODEL_REVIEW.md", "VALIDATION.md"}
+    if parts[0] == "docs": return relative.name in {"MODEL_REVIEW.md", "VALIDATION.md", "HISTORY.md", "HISTORY_MANIFEST.json"}
     return False
 
 
@@ -31,7 +32,8 @@ def audit(root=ROOT):
         if not path.is_file(): continue
         if not allowed(relative): problems.append({"path": relative.as_posix(), "reason": "not_allowlisted"}); continue
         content = path.read_bytes()
-        if len(content) > 512 * 1024: problems.append({"path": relative.as_posix(), "reason": "too_large"}); continue
+        limit = 1024 * 1024 if relative.as_posix() in HISTORY_FILES else 512 * 1024
+        if len(content) > limit: problems.append({"path": relative.as_posix(), "reason": "too_large"}); continue
         try: text = content.decode("utf-8-sig")
         except UnicodeDecodeError: problems.append({"path": relative.as_posix(), "reason": "not_utf8"}); continue
         if secret.search(text) or real_key.search(text) or str(Path.home()) in text:
