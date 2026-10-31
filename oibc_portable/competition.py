@@ -95,6 +95,7 @@ def settlement(pred_kwh, truth_kwh, times, group, price):
         group_abs = sum(abs(error[:, group == g].sum(axis=1)) for g in ("G1", "G2"))
         revenue[valid] = price[valid] * truth[valid].sum(axis=1)
         penalty[valid] = .1 * price[valid] * weights(times)[valid] * group_abs
+    if not np.isfinite(revenue).all() or not np.isfinite(penalty).all(): raise ValueError("Settlement arithmetic overflow")
     count = int(valid.sum())
     return {"common_hours": count, "R": float(revenue.sum()) if count else None,
             "W": float(penalty.sum()) if count else None,

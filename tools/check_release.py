@@ -15,9 +15,10 @@ def allowed(relative):
     if relative.as_posix() in TOP | HISTORY_FILES: return True
     parts = relative.parts
     if len(parts) != 2: return relative.as_posix() == ".github/workflows/tests.yml"
+    if parts[0] == "oibc_portable" and relative.name in {"research_history.json","historical_scores.json"}: return True
     if parts[0] in {"oibc_portable", "tests", "tools"}: return relative.suffix == ".py"
     if parts[0] == "configs": return relative.name in {"quick_cpu.json", "confirmation_cpu.json", "testbed_last_year.json"}
-    if parts[0] == "docs": return relative.name in {"MODEL_REVIEW.md", "VALIDATION.md", "HISTORY.md", "HISTORY_MANIFEST.json", "TESTBED.md", "COMPETITION_CONTRACT.json"}
+    if parts[0] == "docs": return relative.name in {"MODEL_REVIEW.md", "VALIDATION.md", "HISTORY.md", "HISTORY_MANIFEST.json", "TESTBED.md", "COMPETITION_CONTRACT.json", "CSV_TESTBED.md"}
     return False
 
 

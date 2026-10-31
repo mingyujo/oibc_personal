@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oibc-models-portable"
-version = "0.2.0"
+version = "0.3.0"
 description = "Local-data solar forecasting with time-safe validation and portable model recipes"
 requires-python = ">=3.11,<3.15"
 dependencies = ["numpy>=2.0,<3", "pandas>=2.2,<3", "pyarrow>=18,<30", "lightgbm>=4.5,<5", "catboost>=1.2.7,<2", "psutil>=6,<8", "threadpoolctl>=3.5,<4", "tzdata>=2024.1"]
@@ -17,3 +17,6 @@ oibc = "oibc_portable.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["oibc_portable*"]
+
+[tool.setuptools.package-data]
+oibc_portable = ["research_history.json", "historical_scores.json"]

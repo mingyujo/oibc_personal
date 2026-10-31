@@ -33,13 +33,17 @@ def parser():
     experiment.add_argument("--config", required=True); experiment.add_argument("--resume", action="store_true")
     bed = sub.add_parser("testbed", help="Frozen last-year benchmark and competition submission checks")
     actions = bed.add_subparsers(dest="action", required=True)
-    for action in ("plan", "run", "report", "demo", "validate-submission"):
+    for action in ("plan", "run", "report", "demo", "validate-submission", "score-csv", "serve"):
         command = actions.add_parser(action)
         command.add_argument("--work-dir", default=".local-only")
         if action in ("plan", "run"): command.add_argument("--config", required=True)
-        if action in ("run", "validate-submission"): command.add_argument("--data-dir", required=True)
+        if action in ("run", "validate-submission", "score-csv", "serve"): command.add_argument("--data-dir", required=True)
         if action in ("run", "report"): command.add_argument("--run-name", default="last-year")
         if action == "run": command.add_argument("--resume", action="store_true")
+        if action == "serve": command.add_argument("--port",type=int,default=8765)
+        if action == "score-csv":
+            command.add_argument("--forecast",nargs="+",required=True);command.add_argument("--composition")
+            command.add_argument("--label");command.add_argument("--trained-through")
         if action == "validate-submission":
             command.add_argument("--composition", required=True); command.add_argument("--forecast", required=True)
             command.add_argument("--profile", choices=["competition", "synthetic"], default="competition")
@@ -69,6 +73,20 @@ def dispatch(args):
         elif args.action == "run": testbed.run(args.data_dir,args.work_dir,args.config,args.run_name,args.resume)
         elif args.action == "report": event("testbed_report_ready",report=str(testbed.report(args.work_dir,args.run_name)))
         elif args.action == "demo": testbed.demo(args.work_dir)
+        elif args.action == "serve":
+            from .csv_server import serve
+            if not 1<=args.port<=65535: raise ValueError("Invalid local port")
+            serve(args.data_dir,args.work_dir,args.port)
+        elif args.action == "score-csv":
+            from .csv_testbed import Truth,Store
+            from .display import won
+            from .io import RunLock
+            store=Store(Truth(args.data_dir),args.work_dir)
+            with RunLock(store.folder,resume=True):
+                for path in args.forecast:
+                    row=store.add_file(path,args.composition,args.label if len(args.forecast)==1 else Path(path).stem,args.trained_through)
+                    event("csv_scored",label=row["label"],W_KRW=won(row["settlement"]["W"]),S_KRW=won(row["settlement"]["S"]),common_hours=row["settlement"]["common_hours"])
+                event("csv_scoreboard_ready",scoreboard=str(store.export_scores()))
         elif args.action == "validate-submission":
             checked = competition.validate_submission(args.data_dir,args.composition,args.forecast,args.profile)
             output = private_root(args.work_dir)/"submission-checks"/(datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")+".json")

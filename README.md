@@ -6,7 +6,9 @@
 
 지금까지의 시도와 결과는 [실험 기록·주요 결과·EXP-001~026 색인](docs/HISTORY.md)에서 볼 수 있습니다. [이전 전체 기록](learning_history.md)과 [최신 전체 기록](learning_history_02.md)을 함께 보관합니다.
 
-대회 기준의 [고정 마지막 1년 테스트베드](docs/TESTBED.md)를 추가했습니다. `python -m oibc_portable testbed demo`로 원본 없이 동작을 확인하고, `testbed plan --config configs/testbed_last_year.json`으로 실제 학습량을 확인할 수 있습니다. 실제 테스트 대상일은 **2024-06-01~2025-05-31**로 고정합니다.
+**예측 결과 CSV를 이미 가지고 있다면 [CSV 채점 화면](docs/CSV_TESTBED.md)을 사용하세요.** `python -m oibc_portable testbed serve --data-dir <제공자료폴더> --work-dir <결과보관폴더>`를 실행하면 CSV를 넣어 W·S를 바로 계산할 수 있습니다. 기존 저장 예측170건의 재채점 집계와 EXP-001~026의187개 표를 함께 보며, 금액은 원 단위 정수로 표시합니다.
+
+대회 기준의 [모델 학습형 테스트베드](docs/TESTBED.md)도 제공합니다. `python -m oibc_portable testbed demo`로 원본 없이 동작을 확인하고, `testbed plan --config configs/testbed_last_year.json`으로 실제 학습량을 확인할 수 있습니다. 실제 테스트 대상일은 **2024-06-01~2025-05-31**로 고정합니다.
 
 ## 설치
 

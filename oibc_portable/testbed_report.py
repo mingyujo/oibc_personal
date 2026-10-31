@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import numpy as np
 from .io import write
+from .display import won
 
 
 def compare(results, baseline, seeds, minimum_hours, repetitions=1000, block_days=7):
@@ -53,28 +54,29 @@ def compare(results, baseline, seeds, minimum_hours, repetitions=1000, block_day
 
 def render(folder, result):
     folder = Path(folder)
-    def cell(value):
+    def cell(value,key=""):
         if value is None: return "—"
+        if key in {"mean_S","mean_W","mean_R","delta_S_vs_baseline","delta_S_exploratory_95pct","W","S","R"}: return won(value)
         if isinstance(value, float): return f"{value:,.4f}"
         return escape(str(value))
     fields = [("candidate", "후보"), ("mean_S", "정산금 S ↑"), ("mean_W", "페널티 W ↓"),
               ("delta_S_vs_baseline", "기준 대비 ΔS"), ("common_hours", "공통 정답 시간"),
               ("mean_E", "전체 관측 MAE"), ("mean_annual_complete_E", "완비 코호트 MAE"), ("status", "판정 범위")]
-    rows = "".join("<tr>"+"".join("<td>"+cell(row[key])+"</td>" for key, _ in fields)+"</tr>" for row in result["comparison"])
+    rows = "".join("<tr>"+"".join("<td>"+cell(row[key],key)+"</td>" for key, _ in fields)+"</tr>" for row in result["comparison"])
     cards = "".join(f"<p><strong>{escape(label)}</strong> {cell(value)}</p>" for label, value in (
         ("평가 기간", result["split"]["test_start"]+" ~ "+result["split"]["test_end"]),
         ("학습 마감", result["split"]["cutoff"]), ("프로필", result["profile"]),
         ("완비 코호트 발전소 수", result["complete_cohort_sites"])))
     details = []
     for job in result["results"]:
-        monthly = "".join("<tr>"+"".join("<td>"+cell(month.get(k))+"</td>" for k in ("month", "labels", "E", "R", "W", "S", "common_hours"))+"</tr>" for month in job["monthly"])
+        monthly = "".join("<tr>"+"".join("<td>"+cell(month.get(k),k)+"</td>" for k in ("month", "labels", "E", "R", "W", "S", "common_hours"))+"</tr>" for month in job["monthly"])
         details.append(f'<details><summary>{escape(job["candidate"])} · seed {job["seed"]}</summary><table><thead><tr><th>월</th><th>관측 수</th><th>MAE</th><th>R</th><th>W</th><th>S</th><th>공통 시간</th></tr></thead><tbody>{monthly}</tbody></table></details>')
-    intervals = "".join(f'<li>{escape(row["candidate"])}: ΔS 95% 탐색 구간 {cell(row["delta_S_exploratory_95pct"])}; 시드 개선 {row["seed_wins"]}/{row["seeds"]}</li>' for row in result["comparison"])
+    intervals = "".join(f'<li>{escape(row["candidate"])}: ΔS 95% 탐색 구간 {cell(row["delta_S_exploratory_95pct"],"delta_S_exploratory_95pct")}; 시드 개선 {row["seed_wins"]}/{row["seeds"]}</li>' for row in result["comparison"])
     evaluation_note = "가상 자료로 만든 단기 동작 검증입니다. 실제 대회 성능 점수가 아닙니다." if result["profile"] == "synthetic" else "과거 고정 1년 평가입니다. 이미 조회한 기간이므로 새 독립 최종시험이나 공식 리더보드 점수가 아닙니다."
     html = f'''<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>OIBC 테스트베드</title>
 <style>body{{font:16px/1.6 system-ui,sans-serif;max-width:1400px;margin:36px auto;padding:0 22px;color:#172c3b;background:#f5f7fa}}header,section{{background:white;padding:24px;margin:18px 0;border-radius:12px}}table{{width:100%;border-collapse:collapse;font-size:14px}}th,td{{padding:10px;text-align:left;border-bottom:1px solid #dde4eb}}th{{background:#eef4fa}}.scroll{{overflow-x:auto}}input{{padding:10px;min-width:250px}}summary{{cursor:pointer;padding:12px}}.note{{color:#754a06}}</style>
 <header><h1>OIBC 테스트베드</h1>{cards}<p>S = R − W, W = 0.10 × Σ SMP × k × (|G1 오차| + |G2 오차|)</p>
-<p class="note">{evaluation_note} 정산은 모든 발전소의 정답이 있는 시간만 계산합니다. 시드별 점수 평균이며 예측 평균 앙상블이 아닙니다.</p></header>
+<p class="note">{evaluation_note} 정산은 모든 발전소의 정답이 있는 시간만 계산합니다. 시드별 점수 평균이며 예측 평균 앙상블이 아닙니다. W·S 등 금액은 원 단위 반올림으로 표시하고 계산·순위에는 원래 정밀도를 유지합니다.</p></header>
 <section><h2>후보 비교</h2><label>후보 검색 <input id="query" placeholder="후보 이름"></label><div class="scroll"><table id="ranking"><thead><tr>{''.join('<th>'+escape(label)+'</th>' for _,label in fields)}</tr></thead><tbody>{rows}</tbody></table></div>
 <p>정답 지원이 부족한 행은 순위 근거가 없습니다. 자동 제출·모델 승격은 수행하지 않습니다. 같은 표본에서 R은 같으므로 S 증가는 W 감소와 같습니다.</p></section>
 <section><h2>날짜 블록 불확실성</h2><p>{result['statistics']['block_days']}일 이동 블록 · {result['statistics']['replicates']}회 · 다중 비교 보정 없는 탐색 구간. 시드 평균 일별 차이를 날짜 단위로 재표집합니다.</p><ul>{intervals}</ul></section>

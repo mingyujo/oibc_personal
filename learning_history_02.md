@@ -469,3 +469,31 @@
 - 원본읽기감사: 발전실적마지막대상일2025-05-31, 고정테스트8760시간·253개소, 완비코호트205개소·전수공통3802시간확인. 정답그대로의검증입력에서W0, R=3,383,415,379.24909원으로기존정산매전수익의표시정밀도를재현했다. 이는산술검증이며학습모델의성능점수가아니다. 읽은원본3파일SHA256전후일치, 원본행/좌표/식별자출력0, 실제데이터새모델학습0회.
 - 산출물: docs/TESTBED.md, docs/COMPETITION_CONTRACT.json, configs/testbed_last_year.json 및 testbed명령5개(plan/run/report/demo/validate-submission). 실행계약과집합제작시점선언을테스트채점전에잠그며설정·소스·패키지·자료·가격·집합·모델·완료평가해시를확인한다. 공통정답지원이없는정산은null이며단순0점으로취급하지않는다.
 - 검증근거: reports/testbed-tests-final.log, reports/testbed_release/real-input-audit.json, installed-demo.log, wheels/oibc_models_portable-0.2.0-py3-none-any.whl. 기존실험·학습원본은보존했다. CPU2스레드합성검증만추가했으며EXP-026실제학습에는개입하지않았다. 이후행동은허용목록/배포ZIP/원격40파일지문/Windows·Ubuntu CI검증이다. 실제GPT세부모델명은미확인이다.
+
+### TESTBED-001 GitHub·배포 검증 완료 (2026-11-01 KST)
+
+- 게시완료: mingyujo/oibc_personal/main, 커밋2a8ff6bc73c967f6ff4768b3e6db247ee97fd024, v0.2.0. 기존tree를유지하면서16개추가·변경파일을게시해총40파일이되었다. expected_sha로갱신했고별도GET의main과최종SHA가일치했다. 재귀tree의40개경로·Git blobSHA가검사한로컬지문과모두일치했다. 원본자료·가중치·행별예측은게시하지않았다.
+- 최종검증: 로컬합성22개통과, 별도wheel설치본소스14개와현재런타임일치, 설치본데모와17520행합성제출검증통과. GitHub Actions 41230086355에서같은커밋의Windows·Ubuntu 설치·합성·공유허용목록검사가모두성공했다. https://github.com/mingyujo/oibc_personal/actions/runs/41230086355
+- 사용자지정시험은2024-06-01~2025-05-31의마지막1년으로고정했고2024-05-31마감후재학습하지않는다. 기본모델9개·최대18fit의실제자료장기벤치마크는아직시작하지않았다. 완료한것은테스트베드구현·산술/합성/설치/CI검증이며새실제모델성능결과가아니다. 실제원본계약감사의205개완비코호트/253개공통3802시간/R재현은별도기록을따른다.
+- 배포: reports/testbed_release의release-manifest.json, github-upload-2a8ff6b.json, release-qa.json, demo-report.html, testbed v0.2.0 ZIP과wheel을보존했다. ZIP40개전파일SHA256대조통과. reports/portable_release/latest.json이이번배포를가리킨다. README·docs/TESTBED.md에서계획확인/데모/실제실행/재개/보고서/제출검사명령을안내한다.
+- history공개사본도최신스냅샷으로갱신했다. 이전learning_history.md의바이트는불변이고learning_history_02.md사본은로컬검증완료시점까지의471줄이다. 이원격완료기록은스냅샷이후에추가한다. 기존결과·이전배포·현재EXP-026모델/설정/코드는보존했다. 실제GPT세부모델명은미확인이다.
+
+### POST-EXP026-REVIEW-PLAN — 완료 후 모델·연구 검토 예약 (2026-11-01T04:12:09+09:00)
+
+- 사용자 지시: EXP-026이 끝나면 모델을 검토하고 논문·연구 자료를 찾아 추가 발전 가능성을 탐색한다.
+- 실제 후속 감시 프로세스 PID 36536 실행 확인. 원 실험 complete.json의 passed/report_written/input_hashes_verified와 최종 HTML/JSON, 원 coordinator 종료를 확인한 뒤에만 자동 집계 점검·문헌 연결·추가 자료 후보 수집을 시작한다. 단순 진행 파일이나 중간 점수를 최종 결과로 쓰지 않는다.
+- 검토: 원래 정확도/압축 채택 조건 독립 재대조, 205개소 연간 MAE·3seed·6마감·월/짧은 이력·현실 형태 결손, 253개소 같은 공통시간 W 및 대응 F00 대비 부분 ΔS를 분리한다. 최종 기준을 사후 완화하거나 원 실험 코드/계획을 바꾸지 않는다.
+- 최신 문헌 RESEARCH-003과 남은 약점을 연결하고 추가 공개 자료를 검색한다. 준비 단계에서 arXiv API는 인증서 오류, Crossref 대체 서지 검색은 주제별6건씩 실제 응답 확인. 자동 서지/초록 후보와 논문 본문 정독을 구분하며 후자의 최종 해석은 이어받을 작업으로 유지한다. 외부 모델·새 GPT/하위 에이전트를 실행하지 않는다.
+- [후속 계획](reports/post_feature_review/feature-validation-20261031-225815/plan.json), [실행 상태](reports/post_feature_review/feature-validation-20261031-225815/status.json), [후속 보고서 자리](reports/post_feature_review/feature-validation-20261031-225815/report.html). 새 학습·예측·집합·제출 변경0회. 현재 보고서는 대기 상태이며 완료 결과가 아니다.
+- 코드 scripts/post_feature_review.py, 의미 검증5개 통과 및 합성 결과→원래 조건 판정→문헌 연결 HTML 생성까지 확인. 로그 OIBC-team-EDA/.local-only/feature-followup-launch/watch.stdout.log 및 watch.stderr.log. 파일은 바이트 백업→임시파일→원자 교체→재독 검증으로 갱신한다.
+
+
+### TESTBED-002 — CSV 직접 채점·전체 과거 결과·원 단위 표기 (2026-11-01 KST)
+
+- 사용자 요청: 다시 검토하고 지금까지 진행한 내용들을 모두 넣으며W·S는소수점없이1의자리까지표시한다. 범위확인에사용자는결과CSV만넣으면값이나오는방식을지정했다. 따라서과거학습코드전체이식대신학습없는CSV채점·브라우저업로드·기존모든기록조회로구현했다. 테스트기간2024-06-01~2025-05-31과원점/고정배정계약은유지한다.
+- v0.3.0 로컬 구현완료: testbed serve/score-csv 명령, 집합별/발전소별kWh CSV 자동구분, 선택적배정CSV, 정답·SMP 자동연결, 고정전수정답시간누락거부, 파일지문·결과잠금·보존, 다중CSV비교·월별내역·비교표CSV저장. 로컬127.0.0.1만사용하고원본행은외부전송/공개하지않는다. CSV만으로학습·배정제작시점을입증할수없어미확인/선언을구분한다.
+- 표시정밀도: W/S/R·금액차이·구간은원단위ROUND_HALF_UP으로표시하고계산·JSON원자료·순위는반올림전정밀도를유지했다. 과거백만원/만원/천원표는화면에서원으로환산한다. 비율·MAE까지정수로바꾸지않았다. 이전기록자체는소급반올림하지않는다.
+- 전체기록통합: EXP-001~026 원문에서187개표·1456행을추출해출처링크와함께탑재했다. 과거정산5개기록도유지한다. 기간/입력/코호트가다른원래표를현재CSV순위와섞어같은실험으로취급하지않는다. EXP-026은진행중이며최종승격을가정하지않는다.
+- 실제저장예측연결: 완료된연간예측159정책과EXP-024/025의시드·평균예측·기존고정결합11정책, 총170건을보존된NPY에서kWh CSV로변환해재채점했다. 새로운모델학습·GPU추론0회. 모두같은253개소공통3802시간을사용했다. 원래LGBM W=74,875,412원, 과거Patch W=73,147,606원을표시정밀도에서재현했다. 시드/결합도포함되므로170개의서로다른모델구조라는뜻은아니다.
+- 로컬검증: 기존22+CSV/HTTP/정밀도/기록통합검사8=30개합성테스트가26.370초에모두통과했다. 최초HTTP내보내기테스트의bytes JSON직렬화오류를수정하고재검증했다. 서로다른원본지문이면기존170건을동일순위에자동병합하지않는다. GitHub게시·최종설치본/실서버·원격CI는후속확인예정이다.
+- 증거: reports/csv_testbed_release/tests-full-final.log, import-saved.log, legacy-import-summary.json, bundle_scores.py 및보존된scoring-source-v1/. 상세예측CSV와원래NPY경로/해시는.local-only/csv-testbed-v0.3/.local-only에만보관했다. 패키지에는월별이상의집계만포함한다. 실제GPT세부모델명은미확인이다.
