@@ -31,6 +31,18 @@ def parser():
     predict.add_argument("--model-dir", required=True); predict.add_argument("--composition"); predict.add_argument("--device", choices=["cpu","gpu"], default="cpu")
     experiment = sub.add_parser("experiment"); experiment.add_argument("--data-dir", required=True); experiment.add_argument("--work-dir", default=".local-only")
     experiment.add_argument("--config", required=True); experiment.add_argument("--resume", action="store_true")
+    bed = sub.add_parser("testbed", help="Frozen last-year benchmark and competition submission checks")
+    actions = bed.add_subparsers(dest="action", required=True)
+    for action in ("plan", "run", "report", "demo", "validate-submission"):
+        command = actions.add_parser(action)
+        command.add_argument("--work-dir", default=".local-only")
+        if action in ("plan", "run"): command.add_argument("--config", required=True)
+        if action in ("run", "validate-submission"): command.add_argument("--data-dir", required=True)
+        if action in ("run", "report"): command.add_argument("--run-name", default="last-year")
+        if action == "run": command.add_argument("--resume", action="store_true")
+        if action == "validate-submission":
+            command.add_argument("--composition", required=True); command.add_argument("--forecast", required=True)
+            command.add_argument("--profile", choices=["competition", "synthetic"], default="competition")
     return p
 
 
@@ -51,6 +63,16 @@ def dispatch(args):
         models.train(args.work_dir, models.Config(**fields), args.run_name, args.resume)
     elif args.command == "evaluate": evaluation.evaluate(args.work_dir, args.model_dir, args.start, args.end, args.device)
     elif args.command == "predict": evaluation.predict_submission(args.data_dir, args.work_dir, args.model_dir, args.device, args.composition)
+    elif args.command == "testbed":
+        from . import testbed, competition
+        if args.action == "plan": event("testbed_plan", **testbed.plan(args.config))
+        elif args.action == "run": testbed.run(args.data_dir,args.work_dir,args.config,args.run_name,args.resume)
+        elif args.action == "report": event("testbed_report_ready",report=str(testbed.report(args.work_dir,args.run_name)))
+        elif args.action == "demo": testbed.demo(args.work_dir)
+        elif args.action == "validate-submission":
+            checked = competition.validate_submission(args.data_dir,args.composition,args.forecast,args.profile)
+            output = private_root(args.work_dir)/"submission-checks"/(datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")+".json")
+            write(output,checked); event("submission_checked",**checked,report=str(output))
     elif args.command == "experiment":
         spec = read(args.config)
         data.prepare(args.data_dir, args.work_dir, spec.get("cache_start"), spec.get("cache_end"), args.resume)

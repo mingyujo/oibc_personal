@@ -1,0 +1,20 @@
+{
+  "profile": "competition",
+  "cache_start": "2021-01-01",
+  "cache_end": "2025-05-31",
+  "split": {
+    "cutoff": "2024-05-31",
+    "test_start": "2024-06-01",
+    "test_end": "2025-05-31"
+  },
+  "seeds": [20261024, 20261025, 20261026],
+  "baseline": "lgbm_raw6",
+  "candidates": [
+    {"id": "lgbm_raw6", "model": "lgbm_mae", "recipe": "raw6", "composition": "reference"},
+    {"id": "catboost_raw6", "model": "catboost_mae", "recipe": "raw6", "composition": "reference"},
+    {"id": "lgbm_no_weather", "model": "lgbm_mae", "recipe": "no_weather", "composition": "reference"}
+  ],
+  "training": {"threads": 2, "device": "cpu", "max_rounds": 6000, "patience": 300, "validation_days": 30},
+  "statistics": {"replicates": 1000, "block_days": 7},
+  "minimum_common_hours": 48
+}

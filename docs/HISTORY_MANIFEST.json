@@ -1,5 +1,5 @@
 {
-  "snapshot_kst": "2026-11-01T03:02:42.558812+09:00",
+  "snapshot_kst": "2026-11-01T03:33:08.993189+09:00",
   "scope": "Full research journals and an aggregate result guide; historical links may refer to local-only artifacts",
   "source_journals_modified": false,
   "history_files": [
@@ -19,9 +19,9 @@
     },
     {
       "path": "learning_history_02.md",
-      "bytes": 75441,
-      "lines": 429,
-      "sha256": "c7828d61e2e32181dc54c5e5f70f5512de462f97b0352f94329c0dccd9c1a06e",
+      "bytes": 86405,
+      "lines": 471,
+      "sha256": "1c650c6ddd77af136b5a8041eae0dd9f8c674e7837f5ab26591426c5849a1203",
       "byte_identical_to_source": true,
       "pattern_matches": {
         "source_identifier": 0,

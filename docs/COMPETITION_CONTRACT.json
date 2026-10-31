@@ -1,0 +1,57 @@
+{
+  "version": "oibc-2026-local-contract-v1",
+  "verified_date_kst": "2026-11-01",
+  "official_overview": "https://dataen.ai/challenge",
+  "provided_source_sha256": {
+    "competition_overview_text": "0f0fc06c123470c99435d726f28becce2288ff71c15241c8a8c7b1e22a44b690",
+    "competition_rules_text": "b4d07e94cf90c1a69786d5571b464bfc0f15a684312ccab531ad5ecbae16ffc3",
+    "provided_dataset_readme": "d8475954774c328f46e1dea96951b6ea11beffa548611d18eee0db7470c01ca5",
+    "briefing_transcript": "d90ebd0e6a2110f8ccde3f0e22123dace57ccaf14f325ffc4e880e4ca465be10"
+  },
+  "competition_requirements": {
+    "site_count": 253,
+    "fixed_groups": ["G1", "G2"],
+    "minimum_capacity_kw_each": 20000,
+    "assignment": "Every provided site exactly once; one fixed composition over the evaluation period",
+    "forecast_origin": "Target day minus one day at17:00 Asia/Seoul",
+    "forecast_rounds_available": [10, 17],
+    "interval": "Right-closed one-hour energy in kWh",
+    "peak_k": "3 when the KST timestamp end-hour is11,12,13,14,15; otherwise1",
+    "objective": "Maximize S=R-W",
+    "R": "sum_t SMP(t) * sum_sites actual_kwh(t)",
+    "W": "0.10 * sum_t SMP(t)*k(t)*(abs(group1_forecast-group1_actual)+abs(group2_forecast-group2_actual))",
+    "external_data_and_external_pretrained_weights": "Prohibited",
+    "future_observed_weather_and_generation_as_inputs": "Prohibited",
+    "official_hours_per_group": 8760,
+    "official_first_end_timestamp": "2025-06-01T01:00:00+09:00",
+    "official_last_end_timestamp": "2026-06-01T00:00:00+09:00",
+    "official_forecast_rows": 17520,
+    "explicit_timestamp_timezone": true,
+    "forecast_values": "Finite and nonnegative",
+    "external_submission_limits": {"per_day": 3, "competition_total": 20}
+  },
+  "user_selected_test_protocol": {
+    "training_cutoff": "2024-05-31T00:00:00+09:00",
+    "test_target_days": ["2024-06-01", "2025-05-31"],
+    "test_end_timestamps": ["2024-06-01T01:00:00+09:00", "2025-06-01T00:00:00+09:00"],
+    "model_and_composition": "Frozen before the first test forecast origin; no rolling refit on test targets",
+    "inner_selection": "Only pre-cutoff labels; one target-day embargo",
+    "missing_truth": "Never fill with zero; settle only hours with every site observed",
+    "fully_observed_site_cohort": "Availability-based diagnostic only, never a replacement253-site settlement",
+    "prior_test_exposure": "This historical interval has already been inspected; results are development evidence"
+  },
+  "project_choices_not_competition_requirements": {
+    "baseline": "LightGBM-MAE RAW6 with the provided reference composition",
+    "early_stopping": "Nonnegative-output capacity-weighted MAE; test S is not used for stopping",
+    "comparison": "Mean of seed-specific scores, not an average-prediction ensemble",
+    "uncertainty": "Seed-averaged paired daily differences; seven-day moving-block bootstrap; exploratory and unadjusted",
+    "automatic_promotion_or_submission": false,
+    "custom_composition_provenance": "File hash plus a user-declared fitted_through boundary; declaration is not a forensic proof",
+    "ranking_tie_order": "Stable candidate-name display only; official tiebreak rules are not emulated"
+  },
+  "source_limits": [
+    "The full authoritative problem-definition document was not present as a separate local file",
+    "The timestamp k rule follows the provided dataset README and is checked against supplied official k; conversational transcript wording is not used as a different interval rule",
+    "Official hidden-period truth, normalized leaderboard score and exact server tie handling are unavailable"
+  ]
+}

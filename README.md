@@ -6,6 +6,8 @@
 
 지금까지의 시도와 결과는 [실험 기록·주요 결과·EXP-001~026 색인](docs/HISTORY.md)에서 볼 수 있습니다. [이전 전체 기록](learning_history.md)과 [최신 전체 기록](learning_history_02.md)을 함께 보관합니다.
 
+대회 기준의 [고정 마지막 1년 테스트베드](docs/TESTBED.md)를 추가했습니다. `python -m oibc_portable testbed demo`로 원본 없이 동작을 확인하고, `testbed plan --config configs/testbed_last_year.json`으로 실제 학습량을 확인할 수 있습니다. 실제 테스트 대상일은 **2024-06-01~2025-05-31**로 고정합니다.
+
 ## 설치
 
 Python3.12를 권장합니다. 기본 설치는 CPU 트리 모델용이며 시스템 PATH나 전역 Python을 바꾸지 않습니다.
