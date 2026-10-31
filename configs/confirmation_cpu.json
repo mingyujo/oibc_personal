@@ -1,0 +1,10 @@
+{
+  "cache_start": "2021-01-01",
+  "cache_end": "2025-05-31",
+  "cutoffs": ["2024-05-31", "2024-09-30", "2024-12-31"],
+  "models": ["lgbm_mae", "catboost_mae"],
+  "recipes": ["raw6", "no_weather"],
+  "seeds": [20261024, 20261025, 20261026],
+  "evaluation_end": "2025-05-31",
+  "training": {"threads": 4, "device": "cpu", "max_rounds": 6000, "patience": 300, "validation_days": 30}
+}

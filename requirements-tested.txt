@@ -1,0 +1,10 @@
+# Core versions used for the local integration tests (Python3.12).
+# For another platform, install pyproject.toml dependencies first; this is an optional constraint file.
+numpy==2.5.4
+pandas==2.3.3
+pyarrow==26.0.0
+lightgbm==4.7.0
+catboost==1.2.10
+psutil==7.2.2
+threadpoolctl==3.7.0
+tzdata==2026.5
